@@ -1,0 +1,35 @@
+[toolchain]
+anchor_version = "0.32.1"
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+confidential_desk = "HVN74rb5SBJoi6iNiPYKuKpiDB5xs5BBXCqKuzoFuZDb"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha --require ts-node/register -p ./tsconfig.json -t 1000000 \"tests/**/*.ts\""
+
+[test]
+startup_wait = 45000
+shutdown_wait = 2000
+upgradeable = false
+
+[test.validator]
+# 127.0.0.1: Agave 3.x panics with UnspecifiedIpAddr(0.0.0.0) during gossip bind.
+bind_address = "127.0.0.1"
+url = "https://api.devnet.solana.com"
+ledger = ".anchor/test-ledger"
+rpc_port = 8899
+
+[[test.validator.clone]]
+address = "ACLseoPoyC3cBqoUtkbjZ4aDrkurZW86v19pXz2XQnp1"

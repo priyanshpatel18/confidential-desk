@@ -1,0 +1,2983 @@
+{
+  "address": "HVN74rb5SBJoi6iNiPYKuKpiDB5xs5BBXCqKuzoFuZDb",
+  "metadata": {
+    "name": "confidential_desk",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Confidential Lending Desk — private positions on PER, settlement on base"
+  },
+  "instructions": [
+    {
+      "name": "bootstrap_desk_borrow_mint_espl",
+      "docs": [
+        "Base-only: ESPL bootstrap for the borrow mint / pool vault (desk PDA is off-curve; JS `delegateSpl` cannot do this)."
+      ],
+      "discriminator": [
+        15,
+        27,
+        182,
+        73,
+        124,
+        37,
+        106,
+        189
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrow_mint"
+        },
+        {
+          "name": "borrow_vault",
+          "writable": true
+        },
+        {
+          "name": "eata",
+          "writable": true
+        },
+        {
+          "name": "global_vault",
+          "writable": true
+        },
+        {
+          "name": "vault_ephemeral_ata",
+          "writable": true
+        },
+        {
+          "name": "global_vault_ata",
+          "writable": true
+        },
+        {
+          "name": "delegation_buffer",
+          "writable": true
+        },
+        {
+          "name": "delegation_record",
+          "writable": true
+        },
+        {
+          "name": "delegation_metadata",
+          "writable": true
+        },
+        {
+          "name": "espl_token_program"
+        },
+        {
+          "name": "delegation_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "validator",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bootstrap_desk_lp_mint_espl",
+      "docs": [
+        "Base-only: ESPL bootstrap for the LP mint (enables `MintTo` on PER for that mint)."
+      ],
+      "discriminator": [
+        1,
+        1,
+        123,
+        101,
+        145,
+        5,
+        57,
+        133
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "lp_mint"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "desk_lp_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "lp_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "eata",
+          "writable": true
+        },
+        {
+          "name": "global_vault",
+          "writable": true
+        },
+        {
+          "name": "vault_ephemeral_ata",
+          "writable": true
+        },
+        {
+          "name": "global_vault_ata",
+          "writable": true
+        },
+        {
+          "name": "delegation_buffer",
+          "writable": true
+        },
+        {
+          "name": "delegation_record",
+          "writable": true
+        },
+        {
+          "name": "delegation_metadata",
+          "writable": true
+        },
+        {
+          "name": "espl_token_program"
+        },
+        {
+          "name": "delegation_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "validator",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "borrow",
+      "discriminator": [
+        228,
+        253,
+        131,
+        202,
+        207,
+        116,
+        89,
+        18
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk_ledger",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  100,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrow_vault",
+          "writable": true
+        },
+        {
+          "name": "user_borrow_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "close_borrower_position_per",
+      "discriminator": [
+        117,
+        72,
+        40,
+        113,
+        15,
+        132,
+        229,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_lender_position_per",
+      "discriminator": [
+        238,
+        84,
+        142,
+        0,
+        94,
+        37,
+        55,
+        115
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "lender_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  110,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "delegate_borrower",
+      "discriminator": [
+        94,
+        193,
+        204,
+        123,
+        228,
+        7,
+        214,
+        82
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buffer_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                244,
+                255,
+                29,
+                212,
+                6,
+                128,
+                47,
+                32,
+                170,
+                159,
+                54,
+                110,
+                40,
+                191,
+                206,
+                115,
+                50,
+                49,
+                1,
+                241,
+                191,
+                147,
+                141,
+                136,
+                108,
+                72,
+                94,
+                183,
+                133,
+                215,
+                133,
+                90
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validator",
+          "optional": true
+        },
+        {
+          "name": "owner_program",
+          "address": "HVN74rb5SBJoi6iNiPYKuKpiDB5xs5BBXCqKuzoFuZDb"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "delegate_desk_ledger",
+      "discriminator": [
+        149,
+        53,
+        86,
+        185,
+        42,
+        56,
+        57,
+        75
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buffer_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                244,
+                255,
+                29,
+                212,
+                6,
+                128,
+                47,
+                32,
+                170,
+                159,
+                54,
+                110,
+                40,
+                191,
+                206,
+                115,
+                50,
+                49,
+                1,
+                241,
+                191,
+                147,
+                141,
+                136,
+                108,
+                72,
+                94,
+                183,
+                133,
+                215,
+                133,
+                90
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  100,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validator",
+          "optional": true
+        },
+        {
+          "name": "owner_program",
+          "address": "HVN74rb5SBJoi6iNiPYKuKpiDB5xs5BBXCqKuzoFuZDb"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "delegate_lender",
+      "discriminator": [
+        3,
+        208,
+        75,
+        142,
+        103,
+        161,
+        225,
+        11
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buffer_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                244,
+                255,
+                29,
+                212,
+                6,
+                128,
+                47,
+                32,
+                170,
+                159,
+                54,
+                110,
+                40,
+                191,
+                206,
+                115,
+                50,
+                49,
+                1,
+                241,
+                191,
+                147,
+                141,
+                136,
+                108,
+                72,
+                94,
+                183,
+                133,
+                215,
+                133,
+                90
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  110,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validator",
+          "optional": true
+        },
+        {
+          "name": "owner_program",
+          "address": "HVN74rb5SBJoi6iNiPYKuKpiDB5xs5BBXCqKuzoFuZDb"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit_collateral",
+      "discriminator": [
+        156,
+        131,
+        142,
+        116,
+        146,
+        247,
+        162,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "collateral_vault",
+          "writable": true
+        },
+        {
+          "name": "user_collateral_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_liquidity",
+      "discriminator": [
+        245,
+        99,
+        59,
+        25,
+        151,
+        71,
+        233,
+        249
+      ],
+      "accounts": [
+        {
+          "name": "lender",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "docs": [
+            "Read-only on PER: desk config is mirrored from base; only delegated PDAs + token accounts are writable."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk_ledger",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  100,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "lender_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  110,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "lender"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrow_vault",
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "lender_borrow_ata",
+          "writable": true
+        },
+        {
+          "name": "lender_lp_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "lp_to_mint",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "health_tick_borrower",
+      "discriminator": [
+        97,
+        125,
+        1,
+        115,
+        135,
+        65,
+        233,
+        165
+      ],
+      "accounts": [
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "borrower_position.owner",
+                "account": "BorrowerPosition"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "init_desk_vaults",
+      "discriminator": [
+        235,
+        169,
+        192,
+        251,
+        251,
+        216,
+        243,
+        170
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "collateral_mint"
+        },
+        {
+          "name": "borrow_mint"
+        },
+        {
+          "name": "collateral_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "collateral_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "borrow_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "borrow_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_desk",
+      "discriminator": [
+        154,
+        108,
+        165,
+        208,
+        97,
+        238,
+        48,
+        246
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "collateral_mint"
+              },
+              {
+                "kind": "account",
+                "path": "borrow_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "collateral_mint"
+        },
+        {
+          "name": "borrow_mint"
+        },
+        {
+          "name": "lp_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "collateral_mint"
+              },
+              {
+                "kind": "account",
+                "path": "borrow_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk_ledger",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  100,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "permission_desk_ledger",
+          "writable": true
+        },
+        {
+          "name": "permission_program",
+          "address": "ACLseoPoyC3cBqoUtkbjZ4aDrkurZW86v19pXz2XQnp1"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "interest_rate_bps",
+          "type": "u16"
+        },
+        {
+          "name": "ltv_max_bps",
+          "type": "u16"
+        },
+        {
+          "name": "liquidation_threshold_bps",
+          "type": "u16"
+        },
+        {
+          "name": "liquidation_bonus_bps",
+          "type": "u16"
+        },
+        {
+          "name": "collateral_price_q12",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "liquidate_per",
+      "discriminator": [
+        75,
+        114,
+        176,
+        61,
+        48,
+        205,
+        87,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "liquidator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk_ledger",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  100,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "borrower_position.owner",
+                "account": "BorrowerPosition"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrow_vault",
+          "writable": true
+        },
+        {
+          "name": "collateral_vault",
+          "writable": true
+        },
+        {
+          "name": "liquidator_borrow_ata",
+          "writable": true
+        },
+        {
+          "name": "liquidator_collateral_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "open_borrower",
+      "discriminator": [
+        253,
+        196,
+        79,
+        192,
+        183,
+        45,
+        148,
+        183
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "permission_borrower",
+          "writable": true
+        },
+        {
+          "name": "permission_program",
+          "address": "ACLseoPoyC3cBqoUtkbjZ4aDrkurZW86v19pXz2XQnp1"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "open_lender",
+      "discriminator": [
+        74,
+        252,
+        74,
+        224,
+        76,
+        247,
+        234,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "lender_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  110,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "permission_lender",
+          "writable": true
+        },
+        {
+          "name": "permission_program",
+          "address": "ACLseoPoyC3cBqoUtkbjZ4aDrkurZW86v19pXz2XQnp1"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "process_undelegation",
+      "discriminator": [
+        196,
+        28,
+        41,
+        206,
+        48,
+        37,
+        51,
+        167
+      ],
+      "accounts": [
+        {
+          "name": "base_account",
+          "writable": true
+        },
+        {
+          "name": "buffer"
+        },
+        {
+          "name": "payer",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "account_seeds",
+          "type": {
+            "vec": "bytes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "repay",
+      "discriminator": [
+        234,
+        103,
+        67,
+        82,
+        208,
+        234,
+        219,
+        166
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk_ledger",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  100,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrow_vault",
+          "writable": true
+        },
+        {
+          "name": "user_borrow_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "schedule_health_crank_desk",
+      "discriminator": [
+        231,
+        120,
+        234,
+        123,
+        124,
+        147,
+        103,
+        204
+      ],
+      "accounts": [
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "position_owner",
+          "signer": true
+        },
+        {
+          "name": "borrower_position",
+          "writable": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "program",
+          "address": "HVN74rb5SBJoi6iNiPYKuKpiDB5xs5BBXCqKuzoFuZDb"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "ScheduleHealthCrankDeskArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_oracle",
+      "discriminator": [
+        112,
+        41,
+        209,
+        18,
+        248,
+        226,
+        252,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "collateral_price_q12",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_collateral",
+      "discriminator": [
+        115,
+        135,
+        168,
+        106,
+        139,
+        214,
+        138,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "collateral_vault",
+          "writable": true
+        },
+        {
+          "name": "user_collateral_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_lp",
+      "discriminator": [
+        225,
+        221,
+        45,
+        211,
+        49,
+        60,
+        51,
+        163
+      ],
+      "accounts": [
+        {
+          "name": "lender",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk",
+          "docs": [
+            "Read-only on PER: desk config mirror (same as `DepositLiquidity`)."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk.collateral_mint",
+                "account": "DeskConfig"
+              },
+              {
+                "kind": "account",
+                "path": "desk.borrow_mint",
+                "account": "DeskConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "desk_ledger",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  100,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              }
+            ]
+          }
+        },
+        {
+          "name": "lender_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  110,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "lender"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrow_vault",
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "writable": true
+        },
+        {
+          "name": "lender_borrow_ata",
+          "writable": true
+        },
+        {
+          "name": "lender_lp_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "shares",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BorrowerPosition",
+      "discriminator": [
+        22,
+        15,
+        23,
+        98,
+        200,
+        151,
+        249,
+        66
+      ]
+    },
+    {
+      "name": "DeskConfig",
+      "discriminator": [
+        50,
+        232,
+        76,
+        9,
+        116,
+        204,
+        140,
+        153
+      ]
+    },
+    {
+      "name": "DeskLedger",
+      "discriminator": [
+        35,
+        179,
+        146,
+        124,
+        54,
+        23,
+        162,
+        246
+      ]
+    },
+    {
+      "name": "LenderPosition",
+      "discriminator": [
+        165,
+        98,
+        244,
+        204,
+        209,
+        158,
+        88,
+        19
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount"
+    },
+    {
+      "code": 6002,
+      "name": "ExceedsMaxLtv",
+      "msg": "Exceeds max LTV"
+    },
+    {
+      "code": 6003,
+      "name": "NotLiquidatable",
+      "msg": "Position is not liquidatable"
+    },
+    {
+      "code": 6004,
+      "name": "OpenDebt",
+      "msg": "Position has open debt"
+    },
+    {
+      "code": 6005,
+      "name": "OpenCollateral",
+      "msg": "Position has open collateral"
+    },
+    {
+      "code": 6006,
+      "name": "InsufficientLiquidity",
+      "msg": "Insufficient liquidity"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidTimestamp",
+      "msg": "Invalid timestamp"
+    },
+    {
+      "code": 6008,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    }
+  ],
+  "types": [
+    {
+      "name": "BorrowerPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "desk",
+            "type": "pubkey"
+          },
+          {
+            "name": "collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "debt_amount",
+            "type": "u64"
+          },
+          {
+            "name": "last_accrual_ts",
+            "type": "i64"
+          },
+          {
+            "name": "is_liquidatable",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DeskConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "collateral_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "borrow_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "collateral_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "borrow_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "interest_rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "ltv_max_bps",
+            "type": "u16"
+          },
+          {
+            "name": "liquidation_threshold_bps",
+            "type": "u16"
+          },
+          {
+            "name": "liquidation_bonus_bps",
+            "type": "u16"
+          },
+          {
+            "name": "collateral_price_q12",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "_pad",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DeskLedger",
+      "docs": [
+        "Pool accounting on PER (delegated)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "desk",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_deposits",
+            "type": "u64"
+          },
+          {
+            "name": "total_borrowed",
+            "type": "u64"
+          },
+          {
+            "name": "lp_total_minted",
+            "docs": [
+              "Mirrors LP supply on PER for share math."
+            ],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LenderPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "desk",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposit_amount",
+            "docs": [
+              "USDC atoms notionally supplied (mirrors vault share accounting on PER)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "lp_shares",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScheduleHealthCrankDeskArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "task_id",
+            "type": "i64"
+          },
+          {
+            "name": "execution_interval_millis",
+            "type": "i64"
+          },
+          {
+            "name": "iterations",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}
