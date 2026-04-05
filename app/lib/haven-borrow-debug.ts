@@ -38,7 +38,18 @@ export function borrowError(...args: unknown[]): void {
 
 export function borrowLogError(context: string, e: unknown): void {
   if (!borrowDebugEnabled()) return;
-  const msg = e instanceof Error ? e.message : String(e);
+  const msg =
+    e instanceof Error
+      ? e.message
+      : typeof e === "object" && e !== null
+        ? (() => {
+            try {
+              return JSON.stringify(e);
+            } catch {
+              return String(e);
+            }
+          })()
+        : String(e);
   const stack = e instanceof Error ? e.stack : undefined;
   const extra =
     typeof e === "object" && e !== null

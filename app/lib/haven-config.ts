@@ -305,6 +305,8 @@ export {
 export function pairLabels() {
   return {
     collateral: "SOL",
+    /** PER / private balance for the collateral mint (WSOL). */
+    shieldedCollateral: "WSOL",
     collateralDetail:
       "Uses wrapped SOL (WSOL) in your wallet; same value as SOL.",
     borrow: "USDC",

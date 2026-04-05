@@ -1,8 +1,3 @@
-/**
- * TEE / PER privacy integration: token-scoped ER reads (RPS-style).
- * Run with: EPHEMERAL_TEE_INTEGRATION=1 anchor test --skip-deploy
- * Requires deployed program ID matching cluster + tee.magicblock.app (or EPHEMERAL_PROVIDER_ENDPOINT).
- */
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import {

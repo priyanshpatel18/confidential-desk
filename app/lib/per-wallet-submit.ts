@@ -1,17 +1,23 @@
 import { getAuthToken } from "@magicblock-labs/ephemeral-rollups-sdk";
 import {
+  AddressLookupTableAccount,
   Connection,
   PublicKey,
   SendTransactionError,
   Transaction,
+  TransactionMessage,
+  VersionedTransaction,
   type TransactionInstruction,
 } from "@solana/web3.js";
 
 import type { UnsignedTxResponse } from "@/lib/per-types";
+import { parsePerUnsignedWire } from "@/lib/per-tx-wire";
 
 export type PerWalletLike = {
   publicKey: PublicKey | null;
-  signTransaction?: (tx: Transaction) => Promise<Transaction>;
+  signTransaction?: (
+    tx: Transaction | VersionedTransaction,
+  ) => Promise<Transaction | VersionedTransaction>;
   signMessage?: (message: Uint8Array) => Promise<Uint8Array>;
 };
 
@@ -20,6 +26,52 @@ export type PerTransactionMergeOpts = {
   prepend?: TransactionInstruction[];
   append?: TransactionInstruction[];
 };
+
+function normalizeSubmitError(e: unknown): Error {
+  if (e instanceof Error) return e;
+  if (typeof e === "object" && e !== null) {
+    const o = e as Record<string, unknown>;
+    const msg =
+      typeof o.message === "string"
+        ? o.message
+        : typeof o.msg === "string"
+          ? o.msg
+          : (() => {
+              try {
+                return JSON.stringify(e);
+              } catch {
+                return String(e);
+              }
+            })();
+    return new Error(msg);
+  }
+  return new Error(String(e));
+}
+
+async function fetchLookupTableAccounts(
+  connection: Connection,
+  message: VersionedTransaction["message"],
+): Promise<AddressLookupTableAccount[]> {
+  if (message.version !== 0) return [];
+  const lookups = message.addressTableLookups;
+  if (!lookups.length) return [];
+  const out: AddressLookupTableAccount[] = [];
+  for (const l of lookups) {
+    const res = await connection.getAddressLookupTable(l.accountKey);
+    if (!res.value) {
+      throw new Error(
+        `Address lookup table account missing: ${l.accountKey.toBase58()}`,
+      );
+    }
+    out.push(
+      new AddressLookupTableAccount({
+        key: l.accountKey,
+        state: res.value.state,
+      }),
+    );
+  }
+  return out;
+}
 
 /**
  * Deserialize PER unsigned tx, prepend/append SPL instructions, refresh blockhash,
@@ -42,21 +94,63 @@ export async function submitPerTransactionMerged(
     throw new Error("This wallet cannot sign transactions.");
   }
 
-  const basePerTx = Transaction.from(
-    Buffer.from(unsigned.transactionBase64, "base64"),
-  );
+  const parsed = parsePerUnsignedWire(unsigned.transactionBase64);
   const { blockhash, lastValidBlockHeight } =
     await merge.connection.getLatestBlockhash("confirmed");
-  const feePayer = basePerTx.feePayer ?? wallet.publicKey;
-  const merged = new Transaction({
-    feePayer,
-    recentBlockhash: blockhash,
-  });
-  for (const ix of merge.prepend ?? []) merged.add(ix);
-  for (const ix of basePerTx.instructions) merged.add(ix);
-  for (const ix of merge.append ?? []) merged.add(ix);
 
-  const signed = await wallet.signTransaction(merged);
+  const prepend = merge.prepend ?? [];
+  const append = merge.append ?? [];
+
+  let signedLegacy: Transaction | undefined;
+  let signedV0: VersionedTransaction | undefined;
+
+  try {
+    if (parsed.kind === "legacy") {
+      const basePerTx = parsed.tx;
+      const feePayer = basePerTx.feePayer ?? wallet.publicKey;
+      const merged = new Transaction({
+        feePayer,
+        recentBlockhash: blockhash,
+      });
+      for (const ix of prepend) merged.add(ix);
+      for (const ix of basePerTx.instructions) merged.add(ix);
+      for (const ix of append) merged.add(ix);
+      const signed = await wallet.signTransaction(merged);
+      if (!(signed instanceof Transaction)) {
+        throw new Error("Wallet returned unexpected transaction type (expected legacy).");
+      }
+      signedLegacy = signed;
+    } else {
+      const vtx = parsed.tx;
+      const altAccounts = await fetchLookupTableAccounts(
+        merge.connection,
+        vtx.message,
+      );
+      const decompiled = TransactionMessage.decompile(vtx.message, {
+        addressLookupTableAccounts: altAccounts,
+      });
+      const feePayer = decompiled.payerKey;
+      const ixs: TransactionInstruction[] = [
+        ...prepend,
+        ...decompiled.instructions,
+        ...append,
+      ];
+      const msg = new TransactionMessage({
+        payerKey: feePayer,
+        recentBlockhash: blockhash,
+        instructions: ixs,
+      });
+      const v0msg = msg.compileToV0Message(altAccounts);
+      const mergedV = new VersionedTransaction(v0msg);
+      const signed = await wallet.signTransaction(mergedV);
+      if (!(signed instanceof VersionedTransaction)) {
+        throw new Error("Wallet returned unexpected transaction type (expected v0).");
+      }
+      signedV0 = signed;
+    }
+  } catch (e) {
+    throw normalizeSubmitError(e);
+  }
 
   const baseConn = new Connection(baseRpc, { commitment: "confirmed" });
   const ephemeralHttp = ephemeralRpc.replace(/\/+$/, "");
@@ -81,7 +175,9 @@ export async function submitPerTransactionMerged(
 
   const conn = unsigned.sendTo === "ephemeral" ? ephemeralConn : baseConn;
   try {
-    const sig = await conn.sendRawTransaction(signed.serialize(), {
+    const wire =
+      signedLegacy?.serialize() ?? signedV0!.serialize();
+    const sig = await conn.sendRawTransaction(wire, {
       skipPreflight: true,
       maxRetries: 3,
     });
@@ -95,7 +191,7 @@ export async function submitPerTransactionMerged(
       const logs = await e.getLogs(conn);
       throw new Error(`${e.message}\n${logs?.join("\n") ?? ""}`);
     }
-    throw e;
+    throw normalizeSubmitError(e);
   }
 }
 
@@ -113,10 +209,13 @@ export async function submitPreparedPerTransaction(
     throw new Error("This wallet cannot sign transactions.");
   }
 
-  const tx = Transaction.from(
-    Buffer.from(unsigned.transactionBase64, "base64"),
-  );
-  const signed = await wallet.signTransaction(tx);
+  const parsed = parsePerUnsignedWire(unsigned.transactionBase64);
+  let signed: Transaction | VersionedTransaction;
+  try {
+    signed = await wallet.signTransaction(parsed.tx);
+  } catch (e) {
+    throw normalizeSubmitError(e);
+  }
 
   const baseConn = new Connection(baseRpc, { commitment: "confirmed" });
   const ephemeralHttp = ephemeralRpc.replace(/\/+$/, "");
@@ -153,6 +252,6 @@ export async function submitPreparedPerTransaction(
       const logs = await e.getLogs(conn);
       throw new Error(`${e.message}\n${logs?.join("\n") ?? ""}`);
     }
-    throw e;
+    throw normalizeSubmitError(e);
   }
 }

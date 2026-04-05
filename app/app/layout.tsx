@@ -7,7 +7,7 @@ import "./globals.css";
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: "Haven: SOL / USDC",
+  title: "Confidential Desk: SOL / USDC",
   description: "Supply USDC for yield or borrow USDC against SOL.",
 };
 
